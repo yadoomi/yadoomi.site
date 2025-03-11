@@ -1,33 +1,20 @@
-name: Deploy to FreeHosting
-
+name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main  # or your preferred branch
 
 jobs:
-  ftp-deploy:
-    name: FTP Deploy
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Deploy with FTP
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          repository-name: ${{ github.repository }}
           branch: gh-pages
-          folder: ./
-          ftp-server: ${{ secrets.FTP_HOST }}
-          ftp-username: ${{ secrets.FTP_USERNAME }}
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
-
-      - name: Push to gh-pages using Deploy Token
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.DEPLOY_TOKEN }}@github.com/${{ github.repository }}.git
-          git add .
-          git commit -m "Deploying with GitHub Actions"
-          git push origin gh-pages --force
+          folder: ./build  # Your build folder
+          token: ${{ secrets.GH_TOKEN }}  # Use the GitHub token stored in secrets
